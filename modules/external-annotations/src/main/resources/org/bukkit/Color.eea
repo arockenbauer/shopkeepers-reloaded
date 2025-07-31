@@ -1,0 +1,52 @@
+class org/bukkit/Color
+WHITE
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+SILVER
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+GRAY
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+BLACK
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+RED
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+MAROON
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+YELLOW
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+OLIVE
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+LIME
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+GREEN
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+AQUA
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+TEAL
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+BLUE
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+NAVY
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+FUCHSIA
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+PURPLE
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;
+ORANGE
+ Lorg/bukkit/Color;
+ L1org/bukkit/Color;

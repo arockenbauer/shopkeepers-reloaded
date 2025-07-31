@@ -1,0 +1,233 @@
+name: Shopkeepers
+version: '${pluginVersion}'
+description: §fMarchands villageois §6personnalisés
+authors: [nisovin, blablubbabc]
+website: '${dboUrl}'
+# Chargement après les plugins de gestion des mondes et les dépendances logicielles :
+softdepend: [Multiverse-Core, My Worlds, Transporter, Towny, WorldGuard, Citizens, Vault, Gringotts, ChestShop]
+
+main: com.nisovin.shopkeepers.SKShopkeepersPlugin
+api-version: '1.20.6'
+
+commands:
+    shopkeeper:
+        description: §fBase pour toutes les commandes des §6marchands§f.
+        aliases: [shopkeepers]
+        usage: '§fCommande inconnue ! Essayez /<command> help'
+
+permissions:
+    # Permissions de commandes :
+    shopkeeper.help:
+        description: §fAfficher l'§6aide§f des commandes
+        default: true
+    shopkeeper.reload:
+        description: §fRecharger le §6plugin
+        default: op
+    shopkeeper.debug:
+        description: §fBasculer le mode §6débogage§f et accéder aux commandes de débogage
+        default: op
+    shopkeeper.cleanup-citizen-shopkeepers:
+        description: §fSupprimer les marchands Citizens §6invalides§f via commande
+        default: op
+
+    shopkeeper.list.own:
+        description: §fLister vos propres §6boutiques§f de joueur
+        default: true
+    shopkeeper.list.others:
+        description: §fLister les §6boutiques§f des autres joueurs
+        default: op
+    shopkeeper.list.admin:
+        description: §fLister les §6boutiques§f §cadministrateur
+        default: op
+
+    shopkeeper.remove.own:
+        description: §fSupprimer vos propres §6boutiques§f via commande
+        default: op
+    shopkeeper.remove.others:
+        description: §fSupprimer les §6boutiques§f des autres joueurs via commande
+        default: op
+    shopkeeper.remove.admin:
+        description: §fSupprimer les boutiques d'§cadministrateur§f via commande
+        default: op
+
+    shopkeeper.remove-all.own:
+        description: §fSupprimer §ctoutes§f vos propres boutiques via commande
+        default: op
+    shopkeeper.remove-all.others:
+        description: §fSupprimer §ctoutes§f les boutiques d'un autre joueur via commande
+        default: op
+    shopkeeper.remove-all.player:
+        description: §fSupprimer les boutiques de §ctous§f les joueurs via commande
+        default: op
+    shopkeeper.remove-all.admin:
+        description: §fSupprimer §ctoutes§f les boutiques d'administrateur via commande
+        default: op
+
+    shopkeeper.notify.trades:
+        description: §fPermet d'activer ou désactiver les §6notifications§f d'échange par commande
+        default: true
+    shopkeeper.give:
+        description: §fDonner des objets de §6création§f de boutique via commande
+        default: op
+    shopkeeper.givecurrency:
+        description: §fDonner des objets de §6monnaie§f via commande
+        default: op
+    shopkeeper.setcurrency:
+        description: §fDéfinir les objets de §6monnaie§f via commande
+        default: op
+    shopkeeper.convertitems.own:
+        description: §fConvertir vos propres §6objets§f via commande
+        default: op
+    shopkeeper.convertitems.others:
+        description: §fConvertir les §6objets§f d'autres joueurs via commande
+        default: op
+    shopkeeper.updateitems:
+        description: §fMettre à jour les objets §6tiers
+        default: op
+    shopkeeper.remote:
+        description: §fOuvrir les boutiques à §6distance§f via commande
+        default: op
+    shopkeeper.remote.otherplayers:
+        description: §fOuvrir les boutiques à distance pour d'§6autres§f joueurs
+        default: op
+    shopkeeper.remoteedit:
+        description: §fÉditer les boutiques à §6distance§f via commande
+        default: op
+    shopkeeper.transfer:
+        description: §fTransférer la §6propriété§f des boutiques de joueur
+        default: op
+    shopkeeper.teleport:
+        description: §fSe téléporter vers les §6marchands§f via commande
+        default: op
+    shopkeeper.teleport.others:
+        description: §fTéléporter d'autres joueurs vers les §6marchands
+        default: op
+    shopkeeper.settradeperm:
+        description: §fDéfinir les §6permissions§f d'échange pour les boutiques d'admin
+        default: op
+    shopkeeper.settradedcommand:
+        description: §fDéfinir la commande §6échangée§f pour l'objet tenu
+        default: op
+    shopkeeper.setforhire:
+        description: §fDéfinir un marchand comme étant à §6louer
+        default: op
+    shopkeeper.snapshot:
+        description: §fAccéder aux commandes d'§6instantané§f de marchand
+        default: op
+    shopkeeper.edit-villagers:
+        description: §fÉditer les §6villageois§f normaux
+        default: op
+    shopkeeper.edit-wandering-traders:
+        description: §fÉditer les §6marchands§f ambulants normaux
+        default: op
+
+    # Permissions générales
+    shopkeeper.trade:
+        description: §fPermet d'§6échanger§f avec les marchands
+        default: true
+    shopkeeper.hire:
+        description: §fPermet l'§6embauche§f de marchands
+        default: true
+    shopkeeper.bypass:
+        description: §fContourner les restrictions des boutiques (accéder aux boutiques d'§6autres§f joueurs)
+        default: op
+    shopkeeper.maxshops.unlimited:
+        description: §fPermet la création d'un nombre §cilimité§f de boutiques
+        default: op
+    # Permissions dynamiques max boutiques : La limite par défaut est configurée dans la config.
+    # shopkeeper.maxshops.<count>
+    #   description: Le nombre maximum de boutiques qu'un joueur peut avoir, seules les valeurs configurées peuvent être utilisées
+    #   default: false
+
+    # Types de boutiques :
+    shopkeeper.admin:
+        description: §fCréer et modifier les marchands d'§cadministrateur
+        default: op
+    shopkeeper.player.sell:
+        description: §fCréer des marchands de §6vente§f pour joueurs
+        default: false
+    shopkeeper.player.buy:
+        description: §fCréer des marchands d'§6achat§f pour joueurs
+        default: false
+    shopkeeper.player.trade:
+        description: §fCréer des marchands d'§6échange§f pour joueurs
+        default: false
+    shopkeeper.player.book:
+        description: §fCréer des marchands de §6livres§f pour joueurs
+        default: false
+    shopkeeper.player:
+        description: §fCréer n'importe quel type de marchand de §6joueur
+        default: true
+        children:
+            shopkeeper.player.sell: true
+            shopkeeper.player.buy: true
+            shopkeeper.player.trade: true
+            shopkeeper.player.book: true
+
+    # Objets de boutique :
+    shopkeeper.sign:
+        description: §fCréer des marchands §6panneaux
+        default: true
+    shopkeeper.hanging-sign:
+        description: §fCréer des marchands §6panneaux§f suspendus
+        default: true
+    shopkeeper.citizen:
+        description: §fCréer des marchands §6Citizens§f NPC
+        default: op
+    shopkeeper.entity.*:
+        description: §fCréer des marchands de §cn'importe§f quel type de créature
+        default: true
+    # Permissions dynamiques des types de créatures :
+    # Vous pouvez trouver tous les noms de types d'entités ici :
+    # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
+    # Les permissions utilisent le nom du type d'entité en minuscules.
+    # shopkeeper.entity.<mob-type>:
+    #   description: Créer des marchands du type de créature spécifique
+    #   default: false
+
+    shopkeeper.trade-notifications.admin:
+        description: §fRecevoir les §6notifications§f d'échange pour les boutiques d'admin
+        default: false
+    shopkeeper.trade-notifications.player:
+        description: §fRecevoir les §6notifications§f d'échange pour les boutiques de joueur
+        default: false
+
+    # Notation étoile : Inclut toutes les autres permissions
+    shopkeeper.*:
+        description: §fAccès à §ctout
+        default: op
+        children:
+            shopkeeper.help: true
+            shopkeeper.reload: true
+            shopkeeper.debug: true
+            shopkeeper.cleanup-citizen-shopkeepers: true
+            shopkeeper.list.own: true
+            shopkeeper.list.others: true
+            shopkeeper.list.admin: true
+            shopkeeper.remove.own: true
+            shopkeeper.remove.others: true
+            shopkeeper.remove.admin: true
+            shopkeeper.remove-all.own: true
+            shopkeeper.remove-all.others: true
+            shopkeeper.remove-all.player: true
+            shopkeeper.remove-all.admin: true
+            shopkeeper.give: true
+            shopkeeper.givecurrency: true
+            shopkeeper.convertitems.own: true
+            shopkeeper.convertitems.others: true
+            shopkeeper.updateitems: true
+            shopkeeper.remote: true
+            shopkeeper.remote.otherplayers: true
+            shopkeeper.remoteedit: true
+            shopkeeper.transfer: true
+            shopkeeper.settradeperm: true
+            shopkeeper.setforhire: true
+            shopkeeper.trade: true
+            shopkeeper.hire: true
+            shopkeeper.bypass: true
+            shopkeeper.maxshops.unlimited: true
+            shopkeeper.admin: true
+            shopkeeper.player: true
+            shopkeeper.sign: true
+            shopkeeper.citizen: true
+            shopkeeper.entity.*: true

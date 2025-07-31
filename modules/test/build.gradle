@@ -1,0 +1,30 @@
+plugins {
+	id 'java-library'
+	id 'org.checkerframework'
+	id 'eclipse'
+}
+
+dependencies {
+	testImplementation project(':shopkeepers-main')
+	testImplementation project(path: ':shopkeepers-v1_20_R5')
+	testImplementation libs.spigot.api
+	testImplementation libs.junit
+	testImplementation libs.hamcrest
+	(testImplementation libs.craftbukkit) {
+		artifact {
+			classifier = 'remapped-mojang'
+		}
+		// Already included in craftbukkit. Avoids accidentally using the wrong (non-remapped) type.
+		exclude group: 'org.spigotmc', module: 'minecraft-server'
+	}
+}
+
+// Note: There is no need to remap the test classes to run them.
+test {
+	exclude 'com/nisovin/shopkeepers/PerformanceTests.class'
+}
+
+jar {
+	// No output artifacts required.
+	enabled = false
+}

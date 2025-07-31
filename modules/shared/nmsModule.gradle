@@ -1,0 +1,69 @@
+apply plugin: 'java-library'
+apply plugin: 'org.checkerframework'
+apply plugin: 'eclipse'
+
+apply from: rootProject.file('modules/shared/specialSource.gradle')
+
+// Every project using this script must declare this version BEFORE applying this script:
+/*ext {
+	craftbukkitVersion = 'UNSPECIFIED'
+}*/
+
+if (!project.hasProperty('craftbukkitVersion')) {
+	throw new GradleException("Property 'craftbukkitVersion' must be defined before applying this script.")
+}
+
+dependencies {
+	implementation project(':shopkeepers-main')
+	implementation ("org.bukkit:craftbukkit:${craftbukkitVersion}:remapped-mojang") {
+		// Already included in craftbukkit. Avoids accidentally using the wrong (non-remapped) type.
+		exclude group: 'org.spigotmc', module: 'minecraft-server'
+	}
+
+	testImplementation libs.junit
+	testImplementation libs.asm
+}
+
+// Produces a non-remapped output jar, which can for example be referenced by the test module:
+jar {
+}
+
+// Separate Jar task for the remapped output, which is for exampled used by the dist module:
+// Note: It shouldn't really be necessary to extend the Jar task here, but this simpifies defining
+// the output jar based on the normal Jar tasks' archiveFile, and referencing this output jar in the
+// artifacts configuration, which is referenced by other projects during the configuration phase,
+// without observing errors due to the archiveFile being accessed during the configuration phase
+// before the Jar task has run.
+tasks.register("remappedJar", Jar) {
+	dependsOn jar
+	def inputJar = jar.archiveFile
+	inputs.file(inputJar)
+
+	configureJarTask(project, it)
+	archiveClassifier.set("remapped")
+
+	doLast {
+		def inputFile = inputJar.get().asFile
+		def intermediateFile = new File(temporaryDir, inputFile.name.replace('.jar', '-obf.jar'))
+		// We overwrite the default output of this Jar task:
+		def outputFile = outputs.files.singleFile
+		remapMojangToSpigot(inputFile, intermediateFile, outputFile, craftbukkitVersion)
+	}
+}
+
+configurations {
+	create("remapped") {
+		canBeConsumed = true
+		canBeResolved = false
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+		}
+	}
+}
+
+artifacts {
+	remapped tasks.named('remappedJar').map { it.archiveFile }
+}
+
+// Note: The compat modules are not published as standalone artifacts, but are shaded into the final plugin jar.

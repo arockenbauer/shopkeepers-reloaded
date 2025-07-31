@@ -1,0 +1,68 @@
+apply plugin: 'java-library'
+apply plugin: 'org.checkerframework'
+apply plugin: 'eclipse'
+apply plugin: 'io.papermc.paperweight.userdev'
+
+// Every project using this script must declare this version BEFORE applying this script:
+/*ext {
+	craftbukkitVersion = 'UNSPECIFIED'
+}*/
+
+if (!project.hasProperty('craftbukkitVersion')) {
+	throw new GradleException("Property 'craftbukkitVersion' must be defined before applying this script.")
+}
+
+repositories {
+	// Paper
+	maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+dependencies {
+	implementation project(':shopkeepers-main')
+	paperweight.paperDevBundle(craftbukkitVersion) // Includes CraftBukkit and PaperAPI
+
+	testImplementation libs.junit
+	testImplementation libs.asm
+}
+
+// We use Spigot mappings for now to preserve cross-server compatibility for shared compatibility
+// modules (1_20_R5 - 1_21_R4).
+
+// Once we are using Mojang mappings, don't forget to also change the manifest attribute in the
+// final dist jar in the dist module.
+
+// TODO This does not seem to work with Groovy syntax, so we manually replicate the behavior of REOBF_PRODUCTION:
+//paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.getREOBF_PRODUCTION()
+afterEvaluate {
+	reobfJar {
+		def devJar = project.tasks.named('jar') {
+			archiveClassifier.set('dev')
+		}
+		inputJar.set(devJar.flatMap { it.archiveFile })
+		outputJar.convention(project.layout.buildDirectory.file("libs/${project.name}-${project.version}.jar"))
+	}
+}
+
+assemble {
+	// Remove this for Mojang mapped output
+	dependsOn(reobfJar)
+}
+
+afterEvaluate {
+	configurations {
+		create("remapped") {
+			canBeConsumed = true
+			canBeResolved = false
+			attributes {
+				attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+				attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+			}
+		}
+	}
+
+	artifacts {
+		remapped project.tasks.named('reobfJar').map { it.outputJar }
+	}
+}
+
+// Note: The compat modules are not published as standalone artifacts, but are shaded into the final plugin jar.
